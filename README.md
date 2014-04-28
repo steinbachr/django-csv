@@ -61,3 +61,60 @@ class DjangoClass(models.Model):
   name = models.CharField(max_length=200)
   age = models.IntegerField()
 ```
+
+CSV File (filename: 'ppl.csv'):
+```
+1,Joe Schmo,I like cars,22
+2,Bob Stein,I like turtles,24
+3,Mary Jane,I like spiders,35
+```
+
+Basic example of reading into model:
+```
+import django_csv
+
+csv_utils = django_csv.CSVUtilities('ppl.csv')
+csv_utils.read_csv_into_model(DjangoClass, {
+  'name': 1,
+  'age': 3
+})
+```
+
+Basic example of creating csv from excel file:
+```
+from django_csv import CSVUtilities
+
+def some_view(request):
+  CSVUtilities.csv_from_excel(request.FILES.get('excel_file'), 'csvs/some/csv')
+```
+
+More advanced (and admittedly convoluted) example of reading into model:
+```
+import django_csv
+
+class Description(models.Model):
+  text = models.TextField()
+
+class DjangoClass(models.Model):
+  name = models.CharField(max_length=200)
+  age = models.IntegerField()
+  description = models.ForeignKey(Description)
+  
+  @staticmethod
+  def _after_create(instance, row):
+    description = Description.objects.create(text = row[2])
+    instance.description = description
+    instance.save()
+    
+  @classmethod
+  def create_from_csv(cls):
+    csv = 'ppl.csv'
+    csv_utils = django_csv.CSVUtilities(csv)
+    csv_utils.read_csv_into_model(DjangoClass, {
+      'name': 1,
+      'age': 3
+    }, after_creation=cls._after_create)
+```
+
+
+
