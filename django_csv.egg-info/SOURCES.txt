@@ -1,0 +1,7 @@
+setup.py
+django_csv.egg-info/PKG-INFO
+django_csv.egg-info/SOURCES.txt
+django_csv.egg-info/dependency_links.txt
+django_csv.egg-info/entry_points.txt
+django_csv.egg-info/not-zip-safe
+django_csv.egg-info/top_level.txt
