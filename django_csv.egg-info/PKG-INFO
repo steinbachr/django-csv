@@ -1,6 +1,6 @@
 Metadata-Version: 1.1
 Name: django-csv
-Version: 1.0
+Version: 1.01
 Summary: Some CSV Utilities for your django projects
 Home-page: https://github.com/steinbachr/django-csv
 Author: Bobby Steinbach
