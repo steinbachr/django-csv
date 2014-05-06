@@ -46,6 +46,31 @@ class CSVUtilities():
 
         return rows_created
 
+    def write_model_to_csv(self, model, csv_file=None, delimiter=',', header_row=False, qs=None):
+        """
+        :param model: the Django model to write instances out to csv for
+        :param csv_file: ``str`` path to the csv file to write to (if not set, we'll use the path set in this ``CSVUtilities``
+        instance
+        :param delimiter: ``str`` the delimiter for the csv file
+        :param header_row: ``bool`` if True, we'll use the model's attributes as a header row for the csv
+        :param qs: ``QuerySet`` if set we'll write the models in this queryset to the csv file rather then all instances
+        of ``model``
+        """
+        csv_file = csv_file if csv_file else self.csv_file
+        with open(csv_file, 'wb') as csvfile:
+            writer = csv.writer(csvfile, delimiter=delimiter, quotechar='|', quoting=csv.QUOTE_MINIMAL)
+            # get the model field names, we'll use these for introspection
+            # if the field is a foreign key / one-to-one key (any type of related field), then append _id to the field name
+            field_names = ['{field}_id'.format(field=f.name) if f.__dict__.get('related') else f.name
+                           for f in model._meta.fields]
+            if header_row:
+                writer.writerow(field_names)
+
+            queryset = qs if qs else model.objects.all()
+            for instance in queryset:
+                instance_vals = [instance.__dict__.get(name) for name in field_names]
+                writer.writerow([val if val is not None else 'None' for val in instance_vals])
+                
     def check_pred_against_rows(self, pred, delimiter=','):
         """
         :param pred: a callable which takes a single parameter, the current row, and returns one of True or False
