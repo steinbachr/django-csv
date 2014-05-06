@@ -8,8 +8,9 @@ Some CSV Utilities for your django projects
 Basic Usage
 ===========
 
-1. Import ``django_csv``
-2. Create a new ``CSVUtilities`` instance with a single parameter, the path to a CSV file
+1. pip install django-csv
+2. ``from django_csv import CSVUtilities``
+3. Create a new ``CSVUtilities`` instance with a single parameter, the path to a CSV file
 
 
 ===========
